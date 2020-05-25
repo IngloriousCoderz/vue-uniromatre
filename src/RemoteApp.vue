@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import TodoForm from "./components/TodoForm.vue";
 import TodoList from "./components/TodoList.vue";
 
@@ -26,12 +27,12 @@ export default {
 
   data() {
     return {
-      todos: [
-        { id: 1, text: "Learn Vue.js", done: true },
-        { id: 2, text: "Graduate", done: false },
-        { id: 3, text: "Forget everything" },
-      ],
+      todos: [],
     };
+  },
+
+  mounted() {
+    this.fetchTodos();
   },
 
   computed: {
@@ -49,21 +50,27 @@ export default {
   },
 
   methods: {
-    addTodo(text) {
-      const maxId = this.todos.length
-        ? this.todos[this.todos.length - 1].id
-        : 0;
-      this.todos.push({ id: maxId + 1, text });
+    async fetchTodos() {
+      const { data } = await axios.get("http://localhost:3000/todos");
+      this.todos = data;
     },
 
-    toggleDone(id) {
+    async addTodo(text) {
+      await axios.post("http://localhost:3000/todos", { text });
+      await this.fetchTodos();
+    },
+
+    async toggleDone(id) {
       const todo = this.todos.find((todo) => todo.id === id);
-      this.$set(todo, "done", !todo.done);
+      await axios.patch(`http://localhost:3000/todos/${id}`, {
+        done: !todo.done,
+      });
+      await this.fetchTodos();
     },
 
-    removeTodo(id) {
-      const index = this.todos.findIndex((todo) => todo.id === id);
-      this.todos.splice(index, 1);
+    async removeTodo(id) {
+      await axios.delete(`http://localhost:3000/todos/${id}`);
+      await this.fetchTodos();
     },
   },
 };
