@@ -7,23 +7,22 @@
       @span-click="toggleDone"
       @button-click="removeTodo"
     />
-    <footer>
-      Active: {{ active }}, Completed: {{ completed }}, Total: {{ total }}
-    </footer>
+    <TodoFooter :todos="todos" />
   </div>
 </template>
 
 <script>
-import axios from "axios";
 import TodoForm from "./components/TodoForm.vue";
 import TodoList from "./components/TodoList.vue";
+import TodoFooter from "./components/TodoFooter.vue";
+import axios from "axios";
+
+const http = axios.create({ baseURL: "http://localhost:3000/todos" });
 
 export default {
   name: "App",
-  components: {
-    TodoForm,
-    TodoList,
-  },
+
+  components: { TodoForm, TodoList, TodoFooter },
 
   data() {
     return {
@@ -35,41 +34,27 @@ export default {
     this.fetchTodos();
   },
 
-  computed: {
-    active() {
-      return this.todos.filter((todo) => !todo.done).length;
-    },
-
-    completed() {
-      return this.todos.filter((todo) => todo.done).length;
-    },
-
-    total() {
-      return this.todos.length;
-    },
-  },
-
   methods: {
     async fetchTodos() {
-      const { data } = await axios.get("http://localhost:3000/todos");
+      const { data } = await http.get("");
       this.todos = data;
     },
 
     async addTodo(text) {
-      await axios.post("http://localhost:3000/todos", { text });
+      await http.post("", { text });
       await this.fetchTodos();
     },
 
     async toggleDone(id) {
       const todo = this.todos.find((todo) => todo.id === id);
-      await axios.patch(`http://localhost:3000/todos/${id}`, {
+      await http.patch(`/${id}`, {
         done: !todo.done,
       });
       await this.fetchTodos();
     },
 
     async removeTodo(id) {
-      await axios.delete(`http://localhost:3000/todos/${id}`);
+      await http.delete(`/${id}`);
       await this.fetchTodos();
     },
   },

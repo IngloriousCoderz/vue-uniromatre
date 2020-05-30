@@ -7,22 +7,19 @@
       @span-click="toggleDone"
       @button-click="removeTodo"
     />
-    <footer>
-      Active: {{ active }}, Completed: {{ completed }}, Total: {{ total }}
-    </footer>
+    <TodoFooter :todos="todos" />
   </div>
 </template>
 
 <script>
 import TodoForm from "./components/TodoForm.vue";
 import TodoList from "./components/TodoList.vue";
+import TodoFooter from "./components/TodoFooter.vue";
 
 export default {
   name: "App",
-  components: {
-    TodoForm,
-    TodoList,
-  },
+
+  components: { TodoForm, TodoList, TodoFooter },
 
   data() {
     return {
@@ -32,20 +29,6 @@ export default {
         { id: 3, text: "Forget everything" },
       ],
     };
-  },
-
-  computed: {
-    active() {
-      return this.todos.filter((todo) => !todo.done).length;
-    },
-
-    completed() {
-      return this.todos.filter((todo) => todo.done).length;
-    },
-
-    total() {
-      return this.todos.length;
-    },
   },
 
   methods: {

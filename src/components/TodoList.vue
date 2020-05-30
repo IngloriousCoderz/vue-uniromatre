@@ -1,7 +1,9 @@
 <template>
   <ul>
     <li v-for="todo in todos" :key="todo.id">
-      <span :class="{ done: todo.done }" @click="onSpanClick(todo.id)">{{todo.text}}</span>
+      <span :class="{ done: todo.done }" @click="onSpanClick(todo.id)">{{
+        todo.text
+      }}</span>
       <button @click="onButtonClick(todo.id)">x</button>
     </li>
   </ul>
@@ -10,7 +12,7 @@
 <script>
 export default {
   props: {
-    todos: Array
+    todos: Array,
   },
 
   methods: {
@@ -20,8 +22,8 @@ export default {
 
     onButtonClick(id) {
       this.$emit("button-click", id);
-    }
-  }
+    },
+  },
 };
 </script>
 
